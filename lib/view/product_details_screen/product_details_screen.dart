@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_cart_may/controllers/home_screen_controller.dart';
 import 'package:shopping_cart_may/view/cart_screen/cart_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  const ProductDetailsScreen({super.key});
+  final num index;
+  const ProductDetailsScreen({super.key, required this.index});
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -10,10 +13,17 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
-  void initState() {}
+  void initState() {
+    context.read<HomeScreenController>().fetchAllProducts();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final index = widget.index;
+    final homeScreenController =
+        context.watch<HomeScreenController>().allProductsList[index.toInt()];
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -63,7 +73,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         image: DecorationImage(
                             fit: BoxFit.cover,
                             image: NetworkImage(
-                                "https://images.pexels.com/photos/28518049/pexels-photo-28518049/free-photo-of-winter-wonderland-by-a-frozen-river.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"))),
+                                homeScreenController.images![0].toString()))),
                     child: Container(
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -82,7 +92,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ),
                   ),
                   Text(
-                    "title",
+                    homeScreenController.title.toString(),
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -90,7 +100,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    "3/5 Rating",
+                    homeScreenController.rating.toString(),
                     style: TextStyle(
                         color: Colors.amber,
                         fontWeight: FontWeight.bold,
@@ -98,7 +108,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    "description",
+                    homeScreenController.description.toString(),
                     style: TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.normal,
@@ -124,7 +134,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       style: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                     Text(
-                      "RS price",
+                      "RS ${homeScreenController.price}",
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,

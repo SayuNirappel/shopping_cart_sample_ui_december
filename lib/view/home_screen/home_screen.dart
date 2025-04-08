@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_cart_may/controllers/home_screen_controller.dart';
 import 'package:shopping_cart_may/view/cart_screen/cart_screen.dart';
 import 'package:shopping_cart_may/view/product_details_screen/product_details_screen.dart';
 
@@ -12,6 +14,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
+    context.read<HomeScreenController>().fetchCategories();
+    context.read<HomeScreenController>().fetchAllProducts();
     super.initState();
   }
 
@@ -39,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final homeScreenController = context.watch<HomeScreenController>();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -141,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: List.generate(
-                  5,
+                  homeScreenController.categoriesList.length,
                   (index) => Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: InkWell(
@@ -156,7 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.grey.withOpacity(.2),
                             borderRadius: BorderRadius.circular(10)),
                         child: Text(
-                          "categoriesList",
+                          homeScreenController.categoriesList[index].name
+                              .toString(),
                           style: TextStyle(
                               fontWeight: FontWeight.normal,
                               color: Colors.black),
@@ -173,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
               child: GridView.builder(
-            itemCount: 100,
+            itemCount: homeScreenController.allProductsList.length,
             padding: EdgeInsets.all(20),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -186,7 +192,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProductDetailsScreen(),
+                      builder: (context) => ProductDetailsScreen(
+                        index: index,
+                      ),
                     ));
               },
               child: Column(
@@ -200,8 +208,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.grey.withOpacity(.2),
                         image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: NetworkImage(
-                                "https://images.pexels.com/photos/28518049/pexels-photo-28518049/free-photo-of-winter-wonderland-by-a-frozen-river.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"))),
+                            image: NetworkImage(homeScreenController
+                                .allProductsList[index].thumbnail
+                                .toString()))),
                     alignment: Alignment.topRight,
                     child: Container(
                       height: 45,
@@ -217,13 +226,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Text(
                     maxLines: 1,
-                    "title",
+                    homeScreenController.allProductsList[index].title
+                        .toString(),
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 18),
                   ),
-                  Text("price".toString()),
+                  Text(homeScreenController.allProductsList[index].price
+                      .toString()),
                 ],
               ),
             ),

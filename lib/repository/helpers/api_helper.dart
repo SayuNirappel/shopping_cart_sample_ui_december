@@ -7,7 +7,7 @@ class ApiHelper {
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        print("Response data : ${response.body}");
+        //print("Response data : ${response.body}");
         return response.body;
       } else {
         print("Error: ${response.statusCode}");
