@@ -25,4 +25,22 @@ class HomeScreenService {
       return null;
     }
   }
+
+  //fetching details of all products class version
+  Future<List<CategoriesResModel>?> fetchProducts({String? category}) async {
+    String? url;
+    if (category == "all") {
+      url = "/products";
+    } else {
+      url = "/products/category/$category";
+    }
+
+    final res = await ApiHelper.getData(endpoint: url);
+    if (res != null) {
+      final resModel = allProductsResModelFromJson(res);
+      //return resModel;
+    } else {
+      return null;
+    }
+  }
 }
